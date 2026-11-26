@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e9e7dd">
+  <meta name="description" content="Fiziksel klavyeni test et, tuş olaylarını ve key, code ayrımını canlı izle.">
+  <title>Klavye Laboratuvarı</title>
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#controls">Kontrollere geç</a>
+  <header class="mast shell">
+    <div class="identity">
+      <span class="instrument-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <h1>Klavye <span>Laboratuvarı</span></h1>
+    </div>
+    <div class="controls" id="controls" tabindex="-1">
+      <span id="listen-state" class="listen-state" role="status"><i aria-hidden="true"></i><span>Dinleniyor</span></span>
+      <button type="button" id="pause">Duraklat</button>
+      <button type="button" id="demo" class="accent-button">Örneği oynat</button>
+    </div>
+  </header>
+  <main class="shell">
+    <noscript><p class="noscript">Tuşları incelemek için JavaScript’i etkinleştir.</p></noscript>
+    <section class="instrument" aria-label="Canlı klavye ölçümleri">
+      <div class="readout">
+        <h2>Son tuş</h2>
+        <div class="readout-value" id="last-key">—</div>
+        <p id="last-event">Bir tuşa bas.</p>
+      </div>
+      <div class="scope">
+        <div class="scope-head"><h2>Tuş darbeleri</h2><span>SON 5 SN</span></div>
+        <canvas id="waveform" role="img" aria-label="Son beş saniyedeki tuş olaylarının sinyal grafiği"></canvas>
+        <div class="scope-axis" aria-hidden="true"><span>−5 s</span><span>−2,5 s</span><span>Şimdi</span></div>
+      </div>
+      <dl class="measurements">
+        <div><dt>key</dt><dd id="event-key">—</dd></div>
+        <div><dt>code</dt><dd id="event-code">—</dd></div>
+        <div><dt>Konum</dt><dd id="event-location">—</dd></div>
+        <div><dt>Değiştiriciler</dt><dd id="event-modifiers">—</dd></div>
+      </dl>
+    </section>
+
+    <section class="keyboard-console" aria-labelledby="keyboard-title">
+      <header class="console-head">
+        <h2 id="keyboard-title">Tuş tezgâhı</h2>
+        <div class="layout-control"><label for="layout">Düzen</label><select id="layout"><option value="tr">Türkçe Q</option><option value="us">US QWERTY</option></select></div>
+      </header>
+      <p id="keyboard-help" class="sr-only">Ekran klavyesinde ok tuşlarıyla dolaş. Enter veya boşlukla seçili tuşu dene. Fiziksel ok tuşlarını test etmek için Tab ile ekran klavyesinden çık.</p>
+      <div class="deck-scroll">
+        <div id="keyboard" class="deck" role="group" aria-label="Ekran klavyesi" aria-describedby="keyboard-help">
+          <div class="main-keys" id="main-keys"></div>
+          <div class="navigation-keys" id="navigation-keys"></div>
+          <div class="numpad" id="numpad"></div>
+        </div>
+      </div>
+      <div class="console-foot"><span id="held-count">0 tuş basılı</span><span class="scroll-note">Tüm tuşlar için yana kaydır.</span><span class="deck-help">Fiziksel klavyeni kullan veya ekrandaki bir tuşa dokun.</span></div>
+    </section>
+
+    <section class="history" aria-labelledby="history-title">
+      <header class="history-head">
+        <div><h2 id="history-title">Olay kaydı</h2><span id="event-count">0 olay</span></div>
+        <button type="button" id="clear" disabled>Temizle</button>
+      </header>
+      <div class="table-scroll">
+        <table id="event-table" hidden>
+          <thead><tr><th scope="col">Zaman</th><th scope="col">Olay</th><th scope="col">key</th><th scope="col">code</th><th scope="col">Kaynak</th></tr></thead>
+          <tbody id="events"></tbody>
+        </table>
+        <p id="history-empty">Basma, bırakma ve tekrar olayları burada görünür.</p>
+      </div>
+      <p class="sr-only" id="announcement" role="status"></p>
+    </section>
+  </main>
+  <footer class="site-footer shell"><span>Veriler yalnızca bu sayfada işlenir.</span><a href="https://github.com/berkantkull/klavye-laboratuvari">GitHub’da kaynak kodu</a></footer>
+  <canvas id="comet" aria-hidden="true"></canvas>
+</body>
+</html>
