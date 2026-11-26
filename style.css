@@ -34,18 +34,12 @@ button:disabled { cursor: default; }
   display: flex; align-items: center; justify-content: space-between;
   flex-wrap: wrap; gap: .8rem 1.5rem; padding: 1.35rem 0 1rem; border-bottom: 1px solid #838779;
 }
-.identity { display: flex; align-items: center; gap: .85rem; }
-.instrument-mark {
-  display: flex; align-items: flex-end; justify-content: center; gap: 3px;
-  flex: 0 0 2.45rem; width: 2.45rem; height: 2.45rem; padding-bottom: .48rem;
-  background: #272d27; border-radius: 2px 2px 7px 2px;
+.identity { display: flex; align-items: center; min-width: 0; gap: .65rem; }
+.instrument-mark { display: block; flex: 0 0 2.25rem; width: 2.25rem; height: 2.25rem; }
+.identity h1 {
+  font: 650 clamp(1.12rem, 2.4vw, 1.65rem)/1.15 var(--mono);
+  letter-spacing: -.055em;
 }
-.instrument-mark i { width: 3px; height: 33%; background: var(--amber); }
-.instrument-mark i:nth-child(2) { height: 66%; }
-.instrument-mark i:nth-child(3) { height: 48%; }
-.instrument-mark i:nth-child(4) { height: 82%; }
-h1 { font: 750 clamp(1.7rem, 4.5vw, 3.1rem)/.99 var(--display); letter-spacing: -.045em; }
-h1 span { font-weight: 450; }
 .controls { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem .6rem; }
 .controls button, .history-head button {
   min-height: 2.6rem; padding: .42rem .75rem; border: 1px solid #868a7e;
