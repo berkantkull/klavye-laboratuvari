@@ -14,3 +14,7 @@ Fiziksel veya ekran klavyesindeki tuşları deneyebileceğin, tamamı tarayıcı
 `index.html` dosyasını tarayıcıda aç. Harici paket ya da derleme adımı yok. GitHub Pages, `main` dalının kökünden yayın yapar.
 
 Tarayıcı veya işletim sistemi bazı kısayolları sayfaya iletmeyebilir. Ekrandaki yerleşim seçimi fiziksel klavyenin işletim sistemi dilini değiştirmez.
+
+## Lisans
+
+© 2026 Berkant Kul / Stark Bilişim. Proje [MIT Lisansı](LICENSE) ile yayımlanır.

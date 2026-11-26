@@ -6,19 +6,15 @@
   <meta name="theme-color" content="#e9e7dd">
   <meta name="description" content="Fiziksel klavyeni test et, tuş olaylarını ve key, code ayrımını canlı izle.">
   <title>Klavye Laboratuvarı</title>
-  <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
-  <link rel="stylesheet" href="style.css?v=2">
-  <script defer src="app.js"></script>
+  <link rel="stylesheet" href="style.css?v=3">
+  <script defer src="app.js?v=2"></script>
 </head>
 <body>
   <a class="skip" href="#controls">Kontrollere geç</a>
   <header class="mast shell">
-    <div class="identity">
-      <img class="instrument-mark" src="icon.svg?v=2" width="36" height="36" alt="">
-      <h1>Klavye Laboratuvarı</h1>
-    </div>
+    <h1>Klavye Laboratuvarı</h1>
     <div class="controls" id="controls" tabindex="-1">
-      <span id="listen-state" class="listen-state" role="status"><i aria-hidden="true"></i><span>Dinleniyor</span></span>
+      <span id="listen-state" class="sr-only" role="status">Dinleniyor</span>
       <button type="button" id="pause">Duraklat</button>
       <button type="button" id="demo" class="accent-button">Örneği oynat</button>
     </div>
@@ -75,7 +71,11 @@
       <p class="sr-only" id="announcement" role="status"></p>
     </section>
   </main>
-  <footer class="site-footer shell"><span>Veriler yalnızca bu sayfada işlenir.</span><a href="https://github.com/berkantkull/klavye-laboratuvari">GitHub’da kaynak kodu</a></footer>
+  <footer class="site-footer shell">
+    <span>© 2026 Berkant Kul / Stark Bilişim · <a href="https://github.com/berkantkull/klavye-laboratuvari/blob/main/LICENSE">MIT Lisansı</a></span>
+    <span>Veriler yalnızca bu sayfada işlenir.</span>
+    <a href="https://github.com/berkantkull/klavye-laboratuvari">GitHub’da kaynak kodu</a>
+  </footer>
   <canvas id="comet" aria-hidden="true"></canvas>
 </body>
 </html>

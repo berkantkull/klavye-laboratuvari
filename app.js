@@ -369,8 +369,7 @@ pauseButton.addEventListener('click', () => {
   } else {
     demoButton.disabled = false;
   }
-  listenState.toggleAttribute('data-paused', paused);
-  listenState.lastElementChild.textContent = paused ? 'Duraklatıldı' : 'Dinleniyor';
+  listenState.textContent = paused ? 'Duraklatıldı' : 'Dinleniyor';
   pauseButton.textContent = paused ? 'Devam et' : 'Duraklat';
 });
 
