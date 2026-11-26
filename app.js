@@ -36,6 +36,7 @@ const numberGrid = [
 const namedKeys = {
   Space: ' ', AltLeft: 'Alt', AltRight: 'Alt', ControlLeft: 'Control', ControlRight: 'Control',
   ShiftLeft: 'Shift', ShiftRight: 'Shift', MetaLeft: 'Meta', MetaRight: 'Meta', NumpadEnter: 'Enter',
+  ArrowLeft: 'ArrowLeft', ArrowRight: 'ArrowRight', ArrowUp: 'ArrowUp', ArrowDown: 'ArrowDown',
   NumpadSubtract: '-', NumpadAdd: '+', NumpadDivide: '/', NumpadMultiply: '*'
 };
 const keyNames = { ' ': 'Boşluk', Escape: 'Esc', Control: 'Ctrl', ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→', Backspace: 'Backspace' };
