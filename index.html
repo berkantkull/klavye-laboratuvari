@@ -6,75 +6,86 @@
   <meta name="theme-color" content="#e9e7dd">
   <meta name="description" content="Fiziksel klavyeni test et, tuş olaylarını ve key, code ayrımını canlı izle.">
   <title>Klavye Laboratuvarı</title>
-  <link rel="stylesheet" href="style.css?v=3">
-  <script defer src="app.js?v=2"></script>
+  <script>
+    try {
+      if (localStorage.getItem('klab-theme') === 'dark') document.documentElement.dataset.theme = 'dark';
+    } catch {}
+  </script>
+  <link rel="stylesheet" href="style.css?v=4">
+  <script defer src="app.js?v=3"></script>
 </head>
 <body>
-  <a class="skip" href="#controls">Kontrollere geç</a>
+  <a class="skip" href="#controls" data-i18n="skip">Kontrollere geç</a>
   <header class="mast shell">
-    <h1>Klavye Laboratuvarı</h1>
+    <h1 data-i18n="title">Klavye Laboratuvarı</h1>
     <div class="controls" id="controls" tabindex="-1">
       <span id="listen-state" class="sr-only" role="status">Dinleniyor</span>
       <button type="button" id="pause">Duraklat</button>
-      <button type="button" id="demo" class="accent-button">Örneği oynat</button>
+      <button type="button" id="demo" class="accent-button" data-i18n="demo">Örneği oynat</button>
+      <label class="sr-only" for="language" data-i18n="language">Dil</label>
+      <select id="language">
+        <option value="tr" lang="tr">Türkçe</option>
+        <option value="en" lang="en">English</option>
+      </select>
+      <button type="button" id="theme" data-i18n="darkTheme" aria-pressed="false">Koyu tema</button>
     </div>
   </header>
   <main class="shell">
     <noscript><p class="noscript">Tuşları incelemek için JavaScript’i etkinleştir.</p></noscript>
-    <section class="instrument" aria-label="Canlı klavye ölçümleri">
+    <section class="instrument" aria-label="Canlı klavye ölçümleri" data-i18n-label="liveMeasurements">
       <div class="readout">
-        <h2>Son tuş</h2>
+        <h2 data-i18n="lastKey">Son tuş</h2>
         <div class="readout-value" id="last-key">—</div>
         <p id="last-event">Bir tuşa bas.</p>
       </div>
       <div class="scope">
-        <div class="scope-head"><h2>Tuş darbeleri</h2><span>SON 5 SN</span></div>
-        <canvas id="waveform" role="img" aria-label="Son beş saniyedeki tuş olaylarının sinyal grafiği"></canvas>
-        <div class="scope-axis" aria-hidden="true"><span>−5 s</span><span>−2,5 s</span><span>Şimdi</span></div>
+        <div class="scope-head"><h2 data-i18n="pulses">Tuş darbeleri</h2><span data-i18n="lastFive">SON 5 SN</span></div>
+        <canvas id="waveform" role="img" aria-label="Son beş saniyedeki tuş olaylarının sinyal grafiği" data-i18n-label="waveformLabel"></canvas>
+        <div class="scope-axis" aria-hidden="true"><span>−5 s</span><span data-i18n="midTick">−2,5 s</span><span data-i18n="now">Şimdi</span></div>
       </div>
       <dl class="measurements">
         <div><dt>key</dt><dd id="event-key">—</dd></div>
         <div><dt>code</dt><dd id="event-code">—</dd></div>
-        <div><dt>Konum</dt><dd id="event-location">—</dd></div>
-        <div><dt>Değiştiriciler</dt><dd id="event-modifiers">—</dd></div>
+        <div><dt data-i18n="location">Konum</dt><dd id="event-location">—</dd></div>
+        <div><dt data-i18n="modifiers">Değiştiriciler</dt><dd id="event-modifiers">—</dd></div>
       </dl>
     </section>
 
     <section class="keyboard-console" aria-labelledby="keyboard-title">
       <header class="console-head">
-        <h2 id="keyboard-title">Tuş tezgâhı</h2>
-        <div class="layout-control"><label for="layout">Düzen</label><select id="layout"><option value="tr">Türkçe Q</option><option value="us">US QWERTY</option></select></div>
+        <h2 id="keyboard-title" data-i18n="keyboardTitle">Ekran klavyesi</h2>
+        <div class="layout-control"><label for="layout" data-i18n="layout">Düzen</label><select id="layout"><option value="tr" data-i18n="turkishQ">Türkçe Q</option><option value="us">US QWERTY</option></select></div>
       </header>
-      <p id="keyboard-help" class="sr-only">Ekran klavyesinde ok tuşlarıyla dolaş. Enter veya boşlukla seçili tuşu dene. Fiziksel ok tuşlarını test etmek için Tab ile ekran klavyesinden çık.</p>
+      <p id="keyboard-help" class="sr-only" data-i18n="keyboardHelp">Ekran klavyesinde ok tuşlarıyla dolaş. Enter veya boşlukla seçili tuşu dene. Fiziksel ok tuşlarını test etmek için Tab ile ekran klavyesinden çık.</p>
       <div class="deck-scroll">
-        <div id="keyboard" class="deck" role="group" aria-label="Ekran klavyesi" aria-describedby="keyboard-help">
+        <div id="keyboard" class="deck" role="group" aria-label="Ekran klavyesi" aria-describedby="keyboard-help" data-i18n-label="screenKeyboard">
           <div class="main-keys" id="main-keys"></div>
           <div class="navigation-keys" id="navigation-keys"></div>
           <div class="numpad" id="numpad"></div>
         </div>
       </div>
-      <div class="console-foot"><span id="held-count">0 tuş basılı</span><span class="scroll-note">Tüm tuşlar için yana kaydır.</span><span class="deck-help">Fiziksel klavyeni kullan veya ekrandaki bir tuşa dokun.</span></div>
+      <div class="console-foot"><span id="held-count">0 tuş basılı</span><span class="scroll-note" data-i18n="scrollNote">Tüm tuşlar için yana kaydır.</span><span class="deck-help" data-i18n="deckHelp">Fiziksel klavyeni kullan veya ekrandaki bir tuşa dokun.</span></div>
     </section>
 
     <section class="history" aria-labelledby="history-title">
       <header class="history-head">
-        <div><h2 id="history-title">Olay kaydı</h2><span id="event-count">0 olay</span></div>
-        <button type="button" id="clear" disabled>Temizle</button>
+        <div><h2 id="history-title" data-i18n="history">Olay kaydı</h2><span id="event-count">0 olay</span></div>
+        <button type="button" id="clear" data-i18n="clear" disabled>Temizle</button>
       </header>
       <div class="table-scroll">
         <table id="event-table" hidden>
-          <thead><tr><th scope="col">Zaman</th><th scope="col">Olay</th><th scope="col">key</th><th scope="col">code</th><th scope="col">Kaynak</th></tr></thead>
+          <thead><tr><th scope="col" data-i18n="time">Zaman</th><th scope="col" data-i18n="event">Olay</th><th scope="col">key</th><th scope="col">code</th><th scope="col" data-i18n="source">Kaynak</th></tr></thead>
           <tbody id="events"></tbody>
         </table>
-        <p id="history-empty">Basma, bırakma ve tekrar olayları burada görünür.</p>
+        <p id="history-empty" data-i18n="historyEmpty">Basma, bırakma ve tekrar olayları burada görünür.</p>
       </div>
       <p class="sr-only" id="announcement" role="status"></p>
     </section>
   </main>
   <footer class="site-footer shell">
-    <span>© 2026 Berkant Kul / Stark Bilişim · <a href="https://github.com/berkantkull/klavye-laboratuvari/blob/main/LICENSE">MIT Lisansı</a></span>
-    <span>Veriler yalnızca bu sayfada işlenir.</span>
-    <a href="https://github.com/berkantkull/klavye-laboratuvari">GitHub’da kaynak kodu</a>
+    <span>© 2026 Berkant Kul / Stark Bilişim · <a href="https://github.com/berkantkull/klavye-laboratuvari/blob/main/LICENSE" data-i18n="license">MIT Lisansı</a></span>
+    <span data-i18n="privacy">Veriler yalnızca bu sayfada işlenir.</span>
+    <a href="https://github.com/berkantkull/klavye-laboratuvari" data-i18n="github">GitHub’da kaynak kodu</a>
   </footer>
   <canvas id="comet" aria-hidden="true"></canvas>
 </body>

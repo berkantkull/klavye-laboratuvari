@@ -1,6 +1,77 @@
 'use strict';
 
 const get = id => document.getElementById(id);
+const translations = {
+  tr: {
+    title: 'Klavye Laboratuvarı',
+    description: 'Fiziksel klavyeni test et, tuş olaylarını ve key, code ayrımını canlı izle.',
+    skip: 'Kontrollere geç', language: 'Dil', darkTheme: 'Koyu tema', demo: 'Örneği oynat',
+    listening: 'Dinleniyor', paused: 'Duraklatıldı', pause: 'Duraklat', resume: 'Devam et',
+    liveMeasurements: 'Canlı klavye ölçümleri', lastKey: 'Son tuş', idle: 'Bir tuşa bas.',
+    pulses: 'Tuş darbeleri', lastFive: 'SON 5 SN', midTick: '−2,5 s', now: 'Şimdi',
+    waveformLabel: 'Son beş saniyedeki tuş olaylarının sinyal grafiği',
+    location: 'Konum', modifiers: 'Değiştiriciler',
+    standard: 'Standart', left: 'Sol', right: 'Sağ', numpad: 'Sayısal',
+    keyboardTitle: 'Ekran klavyesi', layout: 'Düzen', turkishQ: 'Türkçe Q',
+    screenKeyboard: 'Ekran klavyesi',
+    keyboardHelp: 'Ekran klavyesinde ok tuşlarıyla dolaş. Enter veya boşlukla seçili tuşu dene. Fiziksel ok tuşlarını test etmek için Tab ile ekran klavyesinden çık.',
+    scrollNote: 'Tüm tuşlar için yana kaydır.',
+    deckHelp: 'Fiziksel klavyeni kullan veya ekrandaki bir tuşa dokun.',
+    held: count => count + ' tuş basılı',
+    history: 'Olay kaydı', events: count => count + ' olay', clear: 'Temizle',
+    time: 'Zaman', event: 'Olay', source: 'Kaynak',
+    historyEmpty: 'Basma, bırakma ve tekrar olayları burada görünür.',
+    historyCleared: 'Olay kaydı temizlendi.',
+    pressed: 'Basıldı', released: 'Bırakıldı', repeated: 'Tekrar',
+    physical: 'Fiziksel', screen: 'Ekran', space: 'Boşluk', noCode: 'kod yok',
+    license: 'MIT Lisansı', privacy: 'Veriler yalnızca bu sayfada işlenir.', github: 'GitHub’da kaynak kodu'
+  },
+  en: {
+    title: 'Keyboard Laboratory',
+    description: 'Test your keyboard and watch key events and their key and code values in real time.',
+    skip: 'Skip to controls', language: 'Language', darkTheme: 'Dark theme', demo: 'Play demo',
+    listening: 'Listening', paused: 'Paused', pause: 'Pause', resume: 'Resume',
+    liveMeasurements: 'Live keyboard readings', lastKey: 'Last key', idle: 'Press a key.',
+    pulses: 'Key pulses', lastFive: 'LAST 5 SEC', midTick: '−2.5 s', now: 'Now',
+    waveformLabel: 'Signal graph of key events over the last five seconds',
+    location: 'Location', modifiers: 'Modifiers',
+    standard: 'Standard', left: 'Left', right: 'Right', numpad: 'Numpad',
+    keyboardTitle: 'On-screen keyboard', layout: 'Layout', turkishQ: 'Turkish Q',
+    screenKeyboard: 'On-screen keyboard',
+    keyboardHelp: 'Use the arrow keys to move around the on-screen keyboard. Press Enter or Space to try the selected key. Tab out to test your physical arrow keys.',
+    scrollNote: 'Scroll sideways to see all keys.',
+    deckHelp: 'Use your physical keyboard or tap an on-screen key.',
+    held: count => count + (count === 1 ? ' key held' : ' keys held'),
+    history: 'Event log', events: count => count + (count === 1 ? ' event' : ' events'), clear: 'Clear',
+    time: 'Time', event: 'Event', source: 'Source',
+    historyEmpty: 'Press, release and repeat events appear here.',
+    historyCleared: 'Event log cleared.',
+    pressed: 'Pressed', released: 'Released', repeated: 'Repeat',
+    physical: 'Physical', screen: 'On-screen', space: 'Space', noCode: 'no code',
+    license: 'MIT License', privacy: 'Data is processed only on this page.', github: 'Source code on GitHub'
+  }
+};
+
+function getPreference(name) {
+  try {
+    return localStorage.getItem(name);
+  } catch {
+    return null;
+  }
+}
+
+function savePreference(name, value) {
+  try {
+    localStorage.setItem(name, value);
+  } catch {}
+}
+
+let language = getPreference('klab-language') === 'en' ? 'en' : 'tr';
+let theme = getPreference('klab-theme') === 'dark' ? 'dark' : 'light';
+const t = key => translations[language][key];
+const languageSelect = get('language');
+const themeButton = get('theme');
+
 const key = (code, tr, us = tr, width = 1) => ({ code, tr, us, width });
 const gap = width => ({ width });
 const letters = characters => [...characters].map(letter => key('Key' + letter, letter));
@@ -39,8 +110,9 @@ const namedKeys = {
   ArrowLeft: 'ArrowLeft', ArrowRight: 'ArrowRight', ArrowUp: 'ArrowUp', ArrowDown: 'ArrowDown',
   NumpadSubtract: '-', NumpadAdd: '+', NumpadDivide: '/', NumpadMultiply: '*'
 };
-const keyNames = { ' ': 'Boşluk', Escape: 'Esc', Control: 'Ctrl', ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→', Backspace: 'Backspace' };
-const locations = ['Standart', 'Sol', 'Sağ', 'Sayısal'];
+const keyNames = { Escape: 'Esc', Control: 'Ctrl', ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→' };
+const englishKeycaps = { Backspace: 'Backspace', Space: 'Space', ContextMenu: 'Menu' };
+const locations = ['standard', 'left', 'right', 'numpad'];
 const layout = get('layout');
 const keyboard = get('keyboard');
 const caps = new Map();
@@ -82,7 +154,7 @@ function makeRows(container, rows) {
 
 function refreshLayout() {
   for (const { cap, item } of caps.values()) {
-    const label = displayLabel(item);
+    const label = (language === 'en' && englishKeycaps[item.code]) || displayLabel(item);
     cap.textContent = label;
     cap.title = item.code;
     cap.setAttribute('aria-label', label + ' · ' + item.code);
@@ -125,58 +197,77 @@ const waveform = get('waveform');
 const scope = waveform.getContext('2d');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const pulses = [];
+const recentEvents = [];
 const period = 5000;
 const startedAt = performance.now();
 let paused = false;
 let eventCount = 0;
 let lastCode = '';
+let lastReading = null;
 let traceFrame = 0;
+let timeFormat;
 
 function readableKey(value) {
-  if (value === ' ') return '␣ (boşluk)';
+  if (value === ' ') return '␣ (' + t('space').toLocaleLowerCase(language) + ')';
   return value || '—';
 }
 
 function reflectHeld() {
   const held = new Set([...physicalHeld, ...simulatedHeld.keys()]);
   for (const [code, { cap }] of caps) cap.classList.toggle('is-held', held.has(code));
-  get('held-count').textContent = held.size + ' tuş basılı';
+  get('held-count').textContent = t('held')(held.size);
+}
+
+function eventResult(event) {
+  return t(event.type === 'up' ? 'released' : event.repeat ? 'repeated' : 'pressed');
+}
+
+function keyLegend(value) {
+  return (value === ' ' ? t('space') : keyNames[value] || value) || '—';
 }
 
 function showEvent(event) {
-  const outcome = event.type === 'up' ? 'Bırakıldı' : event.repeat ? 'Tekrar' : 'Basıldı';
-  const keyLabel = keyNames[event.key] || event.key || '—';
+  const keyLabel = keyLegend(event.key);
   lastKey.textContent = keyLabel;
   lastKey.toggleAttribute('data-long', keyLabel.length > 3);
-  lastEvent.textContent = outcome + ' · ' + event.source;
+  lastEvent.textContent = eventResult(event) + ' · ' + t(event.source);
   get('event-key').textContent = readableKey(event.key);
   get('event-code').textContent = event.code || '—';
-  get('event-location').textContent = locations[event.location] || 'Standart';
+  get('event-location').textContent = t(locations[event.location] || 'standard');
   get('event-modifiers').textContent = event.modifiers.join(' + ') || '—';
   caps.get(lastCode)?.cap.classList.remove('is-last');
   lastCode = event.code;
   caps.get(lastCode)?.cap.classList.add('is-last');
-  if (event.type === 'down' && !event.repeat) {
-    get('announcement').textContent = keyLabel + ', ' + (event.code || 'kod yok') + ', ' + event.source;
-  }
-  return outcome;
 }
 
-function appendEvent(event, outcome, now) {
+function historyRow({ event, now }) {
   const row = document.createElement('tr');
-  const time = ((now - startedAt) / 1000).toFixed(2).replace('.', ',') + ' s';
-  for (const value of [time, outcome, readableKey(event.key), event.code || '—', event.source]) {
+  const time = timeFormat.format((now - startedAt) / 1000) + ' s';
+  for (const value of [time, eventResult(event), readableKey(event.key), event.code || '—', t(event.source)]) {
     const cell = document.createElement('td');
     cell.textContent = value;
     row.append(cell);
   }
-  eventList.prepend(row);
-  if (eventList.childElementCount > 12) eventList.lastElementChild.remove();
+  return row;
+}
+
+function showHistoryState() {
+  get('event-count').textContent = t('events')(eventCount);
+  emptyHistory.hidden = eventCount > 0;
+  eventTable.hidden = eventCount === 0;
+  clearButton.disabled = eventCount === 0;
+}
+
+function appendEvent(event, now) {
+  const entry = { event, now };
+  recentEvents.unshift(entry);
+  eventList.prepend(historyRow(entry));
+  if (recentEvents.length > 12) {
+    recentEvents.pop();
+    eventList.lastElementChild.remove();
+  }
   eventCount++;
-  get('event-count').textContent = eventCount + ' olay';
-  emptyHistory.hidden = true;
-  eventTable.hidden = false;
-  clearButton.disabled = false;
+  showHistoryState();
 }
 
 function fitCanvas(canvas, context, maxScale) {
@@ -229,8 +320,12 @@ function animateWave(now) {
 
 function record(event) {
   const now = performance.now();
-  const outcome = showEvent(event);
-  appendEvent(event, outcome, now);
+  lastReading = event;
+  showEvent(event);
+  if (event.type === 'down' && !event.repeat) {
+    get('announcement').textContent = keyLegend(event.key) + ', ' + (event.code || t('noCode')) + ', ' + t(event.source);
+  }
+  appendEvent(event, now);
   reflectHeld();
   pulses.push({ type: event.type, repeat: event.repeat, time: now });
   if (pulses.length > 160) pulses.shift();
@@ -261,7 +356,7 @@ function physicalEvent(event, type) {
   if (event.shiftKey) modifiers.push('Shift');
   if (event.metaKey) modifiers.push('Meta');
   if (event.getModifierState('AltGraph')) modifiers.push('AltGr');
-  record({ key: pressed, code, repeat, location, modifiers, type, source: 'Fiziksel' });
+  record({ key: pressed, code, repeat, location, modifiers, type, source: 'physical' });
 }
 
 window.addEventListener('keydown', event => physicalEvent(event, 'down'));
@@ -279,13 +374,13 @@ function simulate(code) {
   if (paused || simulatedHeld.has(code)) return;
   const { item } = caps.get(code);
   const label = displayLabel(item);
-  const language = layout.value === 'tr' ? 'tr-TR' : 'en-US';
+  const layoutLanguage = layout.value === 'tr' ? 'tr-TR' : 'en-US';
   const value = code === 'AltRight' && layout.value === 'tr' ? 'AltGraph'
-    : namedKeys[code] ?? (label.length === 1 ? label.toLocaleLowerCase(language) : code);
+    : namedKeys[code] ?? (label.length === 1 ? label.toLocaleLowerCase(layoutLanguage) : code);
   const location = code.startsWith('Numpad') || code === 'NumLock' ? 3
     : code.endsWith('Left') && !code.startsWith('Arrow') ? 1
     : code.endsWith('Right') && !code.startsWith('Arrow') ? 2 : 0;
-  const payload = { code, key: value, repeat: false, location, modifiers: [], source: 'Ekran' };
+  const payload = { code, key: value, repeat: false, location, modifiers: [], source: 'screen' };
   const timer = window.setTimeout(() => {
     simulatedHeld.delete(code);
     record({ ...payload, type: 'up' });
@@ -361,6 +456,11 @@ demoButton.addEventListener('click', () => {
   });
 });
 
+function showListeningState() {
+  listenState.textContent = t(paused ? 'paused' : 'listening');
+  pauseButton.textContent = t(paused ? 'resume' : 'pause');
+}
+
 pauseButton.addEventListener('click', () => {
   paused = !paused;
   if (paused) {
@@ -369,30 +469,70 @@ pauseButton.addEventListener('click', () => {
   } else {
     demoButton.disabled = false;
   }
-  listenState.textContent = paused ? 'Duraklatıldı' : 'Dinleniyor';
-  pauseButton.textContent = paused ? 'Devam et' : 'Duraklat';
+  showListeningState();
 });
 
 clearButton.addEventListener('click', () => {
   stopDemo();
   eventCount = 0;
+  recentEvents.length = 0;
+  lastReading = null;
   pulses.length = 0;
   if (traceFrame) cancelAnimationFrame(traceFrame);
   traceFrame = 0;
   paintWave(performance.now());
   eventList.replaceChildren();
-  eventTable.hidden = true;
-  emptyHistory.hidden = false;
-  get('event-count').textContent = '0 olay';
-  clearButton.disabled = true;
+  showHistoryState();
   caps.get(lastCode)?.cap.classList.remove('is-last');
   lastCode = '';
   lastKey.textContent = '—';
   lastKey.removeAttribute('data-long');
-  lastEvent.textContent = 'Bir tuşa bas.';
+  lastEvent.textContent = t('idle');
   for (const id of ['event-key', 'event-code', 'event-location', 'event-modifiers']) get(id).textContent = '—';
-  get('announcement').textContent = 'Olay kaydı temizlendi.';
+  get('announcement').textContent = t('historyCleared');
 });
+
+function applyLanguage() {
+  document.documentElement.lang = language;
+  languageSelect.value = language;
+  document.title = t('title');
+  document.querySelector('meta[name="description"]').content = t('description');
+  for (const element of document.querySelectorAll('[data-i18n]')) {
+    element.textContent = t(element.dataset.i18n);
+  }
+  for (const element of document.querySelectorAll('[data-i18n-label]')) {
+    element.setAttribute('aria-label', t(element.dataset.i18nLabel));
+  }
+  timeFormat = new Intl.NumberFormat(language, {
+    minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: false
+  });
+  refreshLayout();
+  showListeningState();
+  reflectHeld();
+  showHistoryState();
+  eventList.replaceChildren(...recentEvents.map(historyRow));
+  if (lastReading) showEvent(lastReading);
+  else lastEvent.textContent = t('idle');
+}
+
+function applyTheme() {
+  document.documentElement.dataset.theme = theme;
+  document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#161b17' : '#e9e7dd';
+  themeButton.setAttribute('aria-pressed', theme === 'dark');
+}
+
+languageSelect.addEventListener('change', () => {
+  language = languageSelect.value === 'en' ? 'en' : 'tr';
+  savePreference('klab-language', language);
+  applyLanguage();
+});
+themeButton.addEventListener('click', () => {
+  theme = theme === 'dark' ? 'light' : 'dark';
+  savePreference('klab-theme', theme);
+  applyTheme();
+});
+applyLanguage();
+applyTheme();
 
 if ('ResizeObserver' in window) new ResizeObserver(() => paintWave(performance.now())).observe(waveform);
 else window.addEventListener('resize', () => paintWave(performance.now()));
